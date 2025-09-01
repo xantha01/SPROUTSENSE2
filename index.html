@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SproutSense Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="script.js"></script>
+
+  <style></style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <i class="fa-solid fa-leaf"></i>
+      <h1>SproutSense</h1>
+    </div>
+    <nav>
+      <a href="#" class="active">Dashboard</a>
+      <a href="#">History</a>
+      <a href="#">Automations</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Overview -->
+    <section>
+      <h2>Overview</h2>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit,minmax(250px,1fr));">
+        <div class="overview-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h3>Soil Moisture</h3>
+            <div class="icon-box bg-blue"><i class="fa-solid fa-tint"></i></div>
+          </div>
+          <div id="soilmoisturevalue" class="overview-value">0%</div>
+        </div>
+        <div class="overview-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h3>Temperature</h3>
+            <div class="icon-box bg-orange"><i class="fa-solid fa-temperature-half"></i></div>
+          </div>
+          <div id="tempvalue" class="overview-value">0°C</div>
+        </div>
+        <div class="overview-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h3>Humidity</h3>
+            <div class="icon-box bg-green"><i class="fa-solid fa-wind"></i></div>
+          </div>
+          <div id="humidityvalue" class="overview-value">0%</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Activity Overview -->
+    <section>
+      <h2>Activity Overview</h2>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit,minmax(220px,1fr));">
+        <div class="status-card"><h4>Soil Moisture Sensor</h4><div class="status offline">● Offline</div></div>
+        <div class="status-card"><h4>Temperature Sensor</h4><div class="status offline">● Offline</div></div>
+        <div class="status-card"><h4>Humidity Sensor</h4><div class="status offline">● Offline</div></div>
+        <div class="status-card"><h4>Pump Status</h4><div class="status offline">● Pump is currently offline</div></div>
+      </div>
+    </section>
+
+    <!-- Control Panel -->
+    <section>
+      <h2>Control Panel</h2>
+      <div class="panel grid" style="grid-template-columns: repeat(auto-fit,minmax(250px,1fr));gap:2rem;">
+        <div>
+          <h3><i class="fa-solid fa-power-off"></i> System Controls</h3>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:1rem 0;padding:0.5rem;background:var(--muted);border-radius:0.5rem;">
+            <div><label>System Power</label><p style="font-size:0.8rem;color:var(--muted-foreground);">Enable/disable entire system</p></div>
+            <div class="switch" onclick="this.classList.toggle('active')"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:1rem 0;padding:0.5rem;background:var(--muted);border-radius:0.5rem;">
+            <div><label>Auto Mode</label><p style="font-size:0.8rem;color:var(--muted-foreground);">Automatic irrigation</p></div>
+            <div class="switch" onclick="this.classList.toggle('active')"></div>
+          </div>
+        </div>
+        <div>
+          <h3><i class="fa-solid fa-bolt"></i> Pump Controls</h3>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:1rem 0;padding:0.5rem;background:var(--muted);border-radius:0.5rem;">
+            <div><label>Manual Pump Override</label><p style="font-size:0.8rem;color:var(--muted-foreground);">Override automatic controls</p></div>
+            <div class="switch" onclick="this.classList.toggle('active')"></div>
+          </div>
+          <div style="display:flex;gap:0.5rem;">
+            <button class="btn">Settings</button>
+            <button class="btn primary">Run Test Cycle</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Critical Alerts -->
+    <section class="alerts">
+      <div>
+        <h2>Critical Alerts</h2>
+        <div class="grid">
+          <div class="alert warning"><i class="fa-solid fa-triangle-exclamation"></i>
+            <div><h4>Low Soil Moisture</h4><p>Moisture level dropping below optimal range</p><span>2 minutes ago</span></div>
+          </div>
+          <div class="alert info"><i class="fa-solid fa-circle-info"></i>
+            <div><h4>Irrigation Scheduled</h4><p>Next watering cycle in 30 minutes</p><span>5 minutes ago</span></div>
+          </div>
+          <div class="alert success"><i class="fa-solid fa-circle-check"></i>
+            <div><h4>System Online</h4><p>All sensors connected and functioning</p><span>1 hour ago</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Suggestions -->
+      <div>
+        <h2>AI Suggestions</h2>
+        <div class="grid">
+          <div class="suggestion warning"><i class="fa-solid fa-exclamation-circle"></i>
+            <div><h4>Critical Moisture Level</h4><p>Soil moisture at 0% is critically low. Immediate irrigation recommended.</p>
+            <button>Start Irrigation →</button></div>
+          </div>
+          <div class="suggestion optimize"><i class="fa-solid fa-lightbulb"></i>
+            <div><h4>Cool Temperature</h4><p>Temperature at 0°C is cool. Reduce watering frequency to prevent overwatering.</p>
+            <button>Adjust Schedule →</button></div>
+          </div>
+          <div class="suggestion improvement"><i class="fa-solid fa-plug-circle-exclamation"></i>
+            <div><h4>Sensor Connectivity Issues</h4><p>Soil Moisture, Temperature, Humidity sensors offline. Check connections.</p>
+            <button>Troubleshoot →</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>
