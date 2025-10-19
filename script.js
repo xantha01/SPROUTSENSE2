@@ -1,41 +1,29 @@
+const sheetURL = "https://script.google.com/macros/s/AKfycbw-fiK7u1foT6emshERYpPTTbtBg9UD3XqjlSiR7INbWsl9wQZhP-hy7PUqZml2gdHc0Q/exec";
 
-// Import Firebase SDK modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+function animateValue(id, newValue, suffix = "") {
+  const element = document.getElementById(id);
+  element.classList.add("value-updated");
+  setTimeout(() => {
+    element.innerText = newValue + suffix;
+    element.classList.remove("value-updated");
+  }, 300);
+}
 
-// Your Firebase config (from your snippet)
-const firebaseConfig = {
-apiKey: "AIzaSyDLGfknBGSEl6Fw21V0pq04BbfFCubyjaI",
-authDomain: "sproutsense-9536f.firebaseapp.com",
-databaseURL: "https://sproutsense-9536f-default-rtdb.europe-west1.firebasedatabase.app",
-projectId: "sproutsense-9536f",
-storageBucket: "sproutsense-9536f.firebasestorage.app",
-messagingSenderId: "870644685502",
-appId: "1:870644685502:web:1195a2b1baf455c57a9cef"
-};
+async function updateValues() {
+  try {
+    const response = await fetch(sheetURL);
+    if (!response.ok) throw new Error("HTTP error " + response.status);
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+    const data = await response.json();
 
-// Select elements
-const soilMoistureElement = document.getElementById("soilmoisturevalue");
-const tempElement = document.getElementById("tempvalue");
-const humidityElement = document.getElementById("humidityvalue");
+    animateValue("soilmoisturevalue", data.SoilMoisture, "%");
+    animateValue("tempvalue", data.Temperature, "°C");
+    animateValue("humidityvalue", data.Humidity, "%");
+    animateValue("flowratevalue", data.Flowrate, " lpm");
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
 
-// Read data from Firebase Realtime Database
-onValue(ref(database, "irrigation/soilMoisture"), (snapshot) => {
-const value = snapshot.val();
-soilMoistureElement.textContent = value + "%";
-});
-
-onValue(ref(database, "irrigation/temperature"), (snapshot) => {
-const value = snapshot.val();
-tempElement.textContent = value + "°C";
-});
-
-onValue(ref(database, "irrigation/humidity"), (snapshot) => {
-const value = snapshot.val();
-humidityElement.textContent = value + "%";
-});
-
+updateValues();
+setInterval(updateValues, 5000);
