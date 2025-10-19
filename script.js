@@ -1,25 +1,38 @@
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbwPrINFDczOS70KZnLL1Pgu8Kh_Btckhm7ZT3RhmdXOQlLB9X4tLKIKgB7mCIJg8qJyfg/exec"; // Replace with your actual script URL
+const sheetURL = "https://script.google.com/macros/s/AKfycbwDaYG0HjNxpPyMSXDtf0mp57q7sKWpZPsxdRZ33xQwLp9VUS0UyxqaetxsFXXurtgdWQ/exec";
 
-async function updateValues() {
-  try {
-    const response = await fetch(SHEET_URL);
-    if (!response.ok) throw new Error("Network response was not ok");
+window.handleData = function(data) {
+  console.log("Data received:", data);
+  animateValue("soilmoisturevalue", data.SoilMoisture, "%");
+  animateValue("tempvalue", data.Temperature, "°C");
+  animateValue("humidityvalue", data.Humidity, "%");
+  animateValue("flowratevalue", data.Flowrate, " lpm");
+};
 
-    const data = await response.json();
-    console.log("Fetched data:", data);
+function updateValues() {
+  const script = document.createElement("script");
+  script.src = `${sheetURL}?callback=handleData&_=${new Date().getTime()}`;
+  document.body.appendChild(script);
 
-    // Example: If your sheet headers are Temperature, Humidity, SoilMoisture, FlowRate
-    if (data.length > 0) {
-      document.getElementById("temperature").textContent = data[0].Temperature + " °C";
-      document.getElementById("humidity").textContent = data[0].Humidity + " %";
-      document.getElementById("soil").textContent = data[0].SoilMoisture + " %";
-      document.getElementById("flow").textContent = data[0].FlowRate + " L/min";
-    }
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
+  script.onload = () => script.remove();
 }
 
-// Update every 1 second
-setInterval(updateValues, 1000);
+function animateValue(id, value, unit) {
+  const element = document.getElementById(id);
+  if (!element) return;
+
+  const current = parseFloat(element.innerText) || 0;
+  const duration = 500;
+  const startTime = performance.now();
+
+  function update(currentTime) {
+    const progress = Math.min((currentTime - startTime) / duration, 1);
+    const animatedValue = current + (value - current) * progress;
+    element.innerText = animatedValue.toFixed(1) + unit;
+    if (progress < 1) requestAnimationFrame(update);
+  }
+
+  requestAnimationFrame(update);
+}
+
 updateValues();
+setInterval(updateValues, 5000);
