@@ -6,7 +6,7 @@
   <title>SproutSense Dashboard</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link rel="stylesheet" href="style.css">
-  <script type="module" src="script.js"></script>
+  <script src="script.js" defer></script>
 
   <style></style>
 </head>
@@ -85,12 +85,12 @@
 
         <div class="variableinput">
           <h3>Soil Moisture Dry threshold</h3>
-          <input id="soilmoisturedryvalue" class="variablevalue" type="number" value="0" max="1024" min="0"/>
+          <input id="soilmoisturedryvalue" class="variablevalue" type="number" value="1024" max="1024" min="0"/>
         </div>
 
         <div class="variableinput">
           <h3>Soil Moisture Wet threshold</h3>
-          <input id="soilmoisturewetvalue" class="variablevalue" type="number" value="1024" max="1024" min="0" />
+          <input id="soilmoisturewetvalue" class="variablevalue" type="number" value="200" max="1024" min="0" />
         </div>
         
       </div>
@@ -176,3 +176,4 @@
 
 </body>
 </html>
+
