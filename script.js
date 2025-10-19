@@ -1,29 +1,25 @@
-const sheetURL = "https://script.google.com/macros/s/AKfycbw-fiK7u1foT6emshERYpPTTbtBg9UD3XqjlSiR7INbWsl9wQZhP-hy7PUqZml2gdHc0Q/exec";
-
-function animateValue(id, newValue, suffix = "") {
-  const element = document.getElementById(id);
-  element.classList.add("value-updated");
-  setTimeout(() => {
-    element.innerText = newValue + suffix;
-    element.classList.remove("value-updated");
-  }, 300);
-}
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbwPrINFDczOS70KZnLL1Pgu8Kh_Btckhm7ZT3RhmdXOQlLB9X4tLKIKgB7mCIJg8qJyfg/exec"; // Replace with your actual script URL
 
 async function updateValues() {
   try {
-    const response = await fetch(sheetURL);
-    if (!response.ok) throw new Error("HTTP error " + response.status);
+    const response = await fetch(SHEET_URL);
+    if (!response.ok) throw new Error("Network response was not ok");
 
     const data = await response.json();
+    console.log("Fetched data:", data);
 
-    animateValue("soilmoisturevalue", data.SoilMoisture, "%");
-    animateValue("tempvalue", data.Temperature, "°C");
-    animateValue("humidityvalue", data.Humidity, "%");
-    animateValue("flowratevalue", data.Flowrate, " lpm");
+    // Example: If your sheet headers are Temperature, Humidity, SoilMoisture, FlowRate
+    if (data.length > 0) {
+      document.getElementById("temperature").textContent = data[0].Temperature + " °C";
+      document.getElementById("humidity").textContent = data[0].Humidity + " %";
+      document.getElementById("soil").textContent = data[0].SoilMoisture + " %";
+      document.getElementById("flow").textContent = data[0].FlowRate + " L/min";
+    }
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 }
 
+// Update every 1 second
+setInterval(updateValues, 1000);
 updateValues();
-setInterval(updateValues, 5000);
