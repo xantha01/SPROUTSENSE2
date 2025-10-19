@@ -19,6 +19,7 @@
     --orange: #f97316;
     --red: #dc2626;
     --yellow: #eab308;
+    --purple: #a855f7;
 }
 
 body {
@@ -81,6 +82,28 @@ main {
     display: grid;
     gap: 1rem;
 }
+
+.variableinput{
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+.variableinput h3 {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    margin: 0;
+}
+.variableinput input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0.4rem;
+    font-size: 1rem;
+}
+
 .overview-card {
     background: white;
     border: 1px solid var(--border);
@@ -95,7 +118,15 @@ main {
 .overview-value {
     font-size: 1.5rem;
     font-weight: bold;
+    transition: all 0.3s ease;
+    display: inline-block;
 }
+
+.value-updated {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
 .icon-box {
     width: 40px;
     height: 40px;
@@ -108,6 +139,7 @@ main {
 .bg-blue { background: var(--blue);}
 .bg-orange { background: var(--orange);}
 .bg-green { background: var(--green);}
+.bg-purple { background: var(--purple);}
 
 /* ===== ACTIVITY ===== */
 .status-card {
