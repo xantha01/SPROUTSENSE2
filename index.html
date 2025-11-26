@@ -48,6 +48,12 @@
             <div class="icon-box bg-blue"><i class="fa-solid fa-tint"></i></div>
           </div>
           <div id="soilmoisturevalue" class="overview-value">0%</div>
+            <div id="moisturevaluestate" class="valuestate">
+                <span class="levellabel">Normal</span>
+                <div class="levelcont">
+                    <div class="level"></div>
+                </div>
+            </div>
         </div>
 
         <div class="overview-card">
@@ -56,6 +62,12 @@
             <div class="icon-box bg-orange"><i class="fa-solid fa-temperature-half"></i></div>
           </div>
           <div id="tempvalue" class="overview-value">0°C</div>
+           <div id="tempvaluestate" class="valuestate">
+                <span class="levellabel low">low</span>
+                <div class="levelcont">
+                    <div class="level low"></div>
+                </div>
+            </div>
         </div>
 
         <div class="overview-card">
@@ -64,6 +76,12 @@
             <div class="icon-box bg-green"><i class="fa-solid fa-wind"></i></div>
           </div>
           <div id="humidityvalue" class="overview-value">0%</div>
+          <div id="humidityvaluestate" class="valuestate">
+            <span class="levellabel critical">Critical</span>
+            <div class="levelcont">
+              <div class="level critical"></div>
+            </div>
+          </div>
         </div>
 
         <div class="overview-card">
@@ -72,6 +90,14 @@
             <div class="icon-box bg-purple"><i class="fa-solid fa-water"></i></div>
           </div>
           <div id="flowratevalue" class="overview-value">0lpm</div>
+        </div>
+
+        <div class="overview-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h3>Evapotransporation</h3>
+            <div class="icon-box bg-purple"><i class="fa-solid fa-water"></i></div>
+          </div>
+          <div id="flowratevalue" class="overview-value">0</div>
         </div>
 
       </div>
@@ -176,5 +202,4 @@
 
 </body>
 </html>
-
 
