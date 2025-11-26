@@ -70,6 +70,11 @@ window.handleData = function (data) {
     animateValue("humidityvalue", data.Humidity, "%");
     animateValue("flowratevalue", data.Flowrate, " lpm");
 
+    // Update the states
+    updateValueState("moisturevaluestate", mappedSoilMoisture, 0, 100, 30, 50);
+    updateValueState("tempvaluestate", data.Temperature, 0, 50, 24, 40);
+    updateValueState("humidityvaluestate", data.Humidity, 0, 100, 30, 50);
+
     lastTimestamp = currentTimestamp;
   }
 };
@@ -92,6 +97,35 @@ function animateValue(id, value, unit) {
 
   requestAnimationFrame(update);
 }
+
+function updateValueState(containerId, value, min, max, normalMin, normalMax) {
+  const container = document.getElementById(containerId);
+  const label = container.querySelector(".levellabel");
+  const level = container.querySelector(".level");
+
+  // --- Determine Status ---
+  let status = "";
+  if (value < normalMin) status = "low";
+  else if (value > normalMax) status = "critical";
+  else status = "normal";
+
+  // --- Calculate Width ---
+  const percent = ((value - min) / (max - min)) * 100;
+  const width = Math.max(0, Math.min(percent, 100));
+  level.style.width = width + "%";
+
+  // --- Update Classes ---
+  const statusClasses = ["low", "normal", "critical"];
+  level.classList.remove(...statusClasses);
+  label.classList.remove(...statusClasses);
+
+  level.classList.add(status);
+  label.classList.add(status);
+
+  // --- Update Label Text ---
+  label.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+}
+
 
 // ======================= JSONP REQUEST =======================
 function updateValues() {
