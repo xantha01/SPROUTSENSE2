@@ -53,7 +53,7 @@ window.handleData = function (data) {
     const soilMoistureRaw = parseFloat(data.SoilMoisture);
     const mappedSoilMoisture = mapSoilMoisture(soilMoistureRaw);
 
-    animateValue("soilmoisturevalue", mappedSoilMoisture, "%");
+    animateValue("soilmoisturevalue", data.SoilMoisture, "%");
     animateValue("tempvalue", data.Temperature, "°C");
     animateValue("humidityvalue", data.Humidity, "%");
     animateValue("flowratevalue", data.Flowrate, " lpm");
@@ -181,5 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
   updateValues();
   setInterval(updateValues, 5000); // Fetch every 5s
 });
+
 
 
