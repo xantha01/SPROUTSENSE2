@@ -1,6 +1,6 @@
 // ======================= CONFIG =======================
 const sheetURL =
-  "https://script.google.com/macros/s/AKfycbwDaYG0HjNxpPyMSXDtf0mp57q7sKWpZPsxdRZ33xQwLp9VUS0UyxqaetxsFXXurtgdWQ/exec";
+  "https://script.google.com/macros/s/AKfycbz5IxkHWljLRpSAZl5YkkWNZlmaxfGaCPVXXYjf9wXernbCQ02Nca_Zf_r9Q-a7D0PS4A/exec";
 let lastTimestamp = null;
 
 // ======================= THRESHOLD VARIABLES =======================
@@ -69,6 +69,7 @@ window.handleData = function (data) {
     animateValue("tempvalue", data.Temperature, "°C");
     animateValue("humidityvalue", data.Humidity, "%");
     animateValue("flowratevalue", data.Flowrate, " lpm");
+    animateValue("EtoValue", data.ET0, " lpm");
 
     // Update the states
     updateValueState("moisturevaluestate", mappedSoilMoisture, 0, 100, 30, 50);
