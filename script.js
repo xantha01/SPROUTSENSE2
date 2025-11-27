@@ -17,12 +17,26 @@ function clampValue(value) {
   return value;
 }
 
+// function mapSoilMoisture(raw) {
+//   raw = Math.min(Math.max(raw, soilMoistureDry), soilMoistureWet);
+//   const percentage =
+//     ((soilMoistureWet - raw) / (soilMoistureWet - soilMoistureDry)) * 100;
+//   return Math.round(percentage);
+// }
+
 function mapSoilMoisture(raw) {
-  raw = Math.min(Math.max(raw, soilMoistureDry), soilMoistureWet);
-  const percentage =
-    ((soilMoistureWet - raw) / (soilMoistureWet - soilMoistureDry)) * 100;
+  const dry = soilMoistureDry;
+  const wet = soilMoistureWet;
+
+  if (isNaN(raw) || isNaN(dry) || isNaN(wet) || dry === wet) return 0;
+
+  raw = Math.min(Math.max(raw, wet), dry);
+
+  const percentage = ((dry - raw) / (dry - wet)) * 100;
+
   return Math.round(percentage);
 }
+
 
 function updateThresholds() {
   const wetInput = document.getElementById("soilmoisturewetvalue");
@@ -53,7 +67,7 @@ window.handleData = function (data) {
     const soilMoistureRaw = parseFloat(data.SoilMoisture);
     const mappedSoilMoisture = mapSoilMoisture(soilMoistureRaw);
 
-    animateValue("soilmoisturevalue", data.SoilMoisture, "%");
+    animateValue("soilmoisturevalue", mappedSoilMoisture, "%");
     animateValue("tempvalue", data.Temperature, "°C");
     animateValue("humidityvalue", data.Humidity, "%");
     animateValue("flowratevalue", data.Flowrate, " lpm");
@@ -181,6 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateValues();
   setInterval(updateValues, 5000); // Fetch every 5s
 });
+
 
 
 
