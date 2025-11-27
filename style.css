@@ -288,7 +288,7 @@ main {
 .level{
     background-color: rgb(22, 163, 74);
     border-radius: 20px;
-    width: 35%;
+    width: 0%;
 }
 
 .low{
@@ -309,3 +309,4 @@ span.critical{
     background-color: unset;
     color: #dc2626;
 }
+
