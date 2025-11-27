@@ -57,7 +57,7 @@ window.handleData = function (data) {
     animateValue("tempvalue", data.Temperature, "°C");
     animateValue("humidityvalue", data.Humidity, "%");
     animateValue("flowratevalue", data.Flowrate, " lpm");
-    animateValue("EtoValue", data.ET0, " lpm");
+    animateValue("EtoValue", data.ET0, " mm/day");
 
     updateValueState("moisturevaluestate", mappedSoilMoisture, 0, 100, 30, 50);
     updateValueState("tempvaluestate", data.Temperature, 0, 50, 24, 40);
@@ -181,4 +181,5 @@ document.addEventListener("DOMContentLoaded", () => {
   updateValues();
   setInterval(updateValues, 5000); // Fetch every 5s
 });
+
 
