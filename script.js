@@ -1,7 +1,10 @@
 // ======================= CONFIG =======================
 const sheetURL =
   "https://script.google.com/macros/s/AKfycbz5IxkHWljLRpSAZl5YkkWNZlmaxfGaCPVXXYjf9wXernbCQ02Nca_Zf_r9Q-a7D0PS4A/exec";
+
 let lastTimestamp = null;
+let lastUpdateTime = Date.now();
+const OFFLINE_TIMEOUT = 15000; // 15 seconds before declaring offline
 
 // ======================= THRESHOLD VARIABLES =======================
 let soilMoistureWet = 1024;
@@ -39,46 +42,58 @@ window.handleData = function (data) {
   console.log("Data received:", data);
 
   const currentTimestamp = data.Timestamp ? String(data.Timestamp).trim() : null;
-  const isSame = currentTimestamp && currentTimestamp === lastTimestamp;
 
-  const statusCards = document.querySelectorAll(".status-card .status");
+  // ✅ If timestamp changed → device is online
+  if (currentTimestamp && currentTimestamp !== lastTimestamp) {
+    lastTimestamp = currentTimestamp;
+    lastUpdateTime = Date.now(); // reset offline timer
+    setStatusOnline();
 
-  if (isSame) {
-    statusCards.forEach((el) => {
-      el.textContent = "● Offline";
-      el.classList.remove("online");
-      el.classList.add("offline");
-    });
-  } else {
-    statusCards.forEach((el, index) => {
-      if (index < 3) {
-        el.textContent = "● Online";
-      } else {
-        el.textContent = "● Pump is currently online";
-      }
-      el.classList.remove("offline");
-      el.classList.add("online");
-    });
-
-    // 🔹 Map soil moisture using the calibrated thresholds
+    // 🔹 Map and update values
     const soilMoistureRaw = parseFloat(data.SoilMoisture);
     const mappedSoilMoisture = mapSoilMoisture(soilMoistureRaw);
 
-    // 🔹 Update UI values
     animateValue("soilmoisturevalue", mappedSoilMoisture, "%");
     animateValue("tempvalue", data.Temperature, "°C");
     animateValue("humidityvalue", data.Humidity, "%");
     animateValue("flowratevalue", data.Flowrate, " lpm");
     animateValue("EtoValue", data.ET0, " lpm");
 
-    // Update the states
     updateValueState("moisturevaluestate", mappedSoilMoisture, 0, 100, 30, 50);
     updateValueState("tempvaluestate", data.Temperature, 0, 50, 24, 40);
-    updateValueState("humidityvaluestate", data.Humidity, 0, 100, 30, 50);
-
-    lastTimestamp = currentTimestamp;
+    updateValueState("humidityvaluestate", data.Humidity, 0, 100, 30, 60);
   }
 };
+
+// ======================= STATUS HANDLING =======================
+function setStatusOnline() {
+  const statusCards = document.querySelectorAll(".status-card .status");
+  statusCards.forEach((el, index) => {
+    if (index < 3) {
+      el.textContent = "● Online";
+    } else {
+      el.textContent = "● Pump is currently online";
+    }
+    el.classList.remove("offline");
+    el.classList.add("online");
+  });
+}
+
+function setStatusOffline() {
+  const statusCards = document.querySelectorAll(".status-card .status");
+  statusCards.forEach((el) => {
+    el.textContent = "● Offline";
+    el.classList.remove("online");
+    el.classList.add("offline");
+  });
+}
+
+// ✅ Check offline timeout every 2 seconds
+setInterval(() => {
+  if (Date.now() - lastUpdateTime > OFFLINE_TIMEOUT) {
+    setStatusOffline();
+  }
+}, 2000);
 
 // ======================= VALUE ANIMATION =======================
 function animateValue(id, value, unit) {
@@ -104,18 +119,15 @@ function updateValueState(containerId, value, min, max, normalMin, normalMax) {
   const label = container.querySelector(".levellabel");
   const level = container.querySelector(".level");
 
-  // --- Determine Status ---
   let status = "";
   if (value < normalMin) status = "low";
   else if (value > normalMax) status = "critical";
   else status = "normal";
 
-  // --- Calculate Width ---
   const percent = ((value - min) / (max - min)) * 100;
   const width = Math.max(0, Math.min(percent, 100));
   level.style.width = width + "%";
 
-  // --- Update Classes ---
   const statusClasses = ["low", "normal", "critical"];
   level.classList.remove(...statusClasses);
   label.classList.remove(...statusClasses);
@@ -123,10 +135,8 @@ function updateValueState(containerId, value, min, max, normalMin, normalMax) {
   level.classList.add(status);
   label.classList.add(status);
 
-  // --- Update Label Text ---
   label.textContent = status.charAt(0).toUpperCase() + status.slice(1);
 }
-
 
 // ======================= JSONP REQUEST =======================
 function updateValues() {
@@ -138,7 +148,6 @@ function updateValues() {
 
 // ======================= INIT =======================
 document.addEventListener("DOMContentLoaded", () => {
-  // Set up threshold listeners
   document
     .getElementById("soilmoisturewetvalue")
     .addEventListener("input", updateThresholds);
@@ -146,10 +155,8 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("soilmoisturedryvalue")
     .addEventListener("input", updateThresholds);
 
-  // Initialize thresholds once
   updateThresholds();
 
-  // Start fetching data
   updateValues();
-  setInterval(updateValues, 5000);
+  setInterval(updateValues, 5000); // Fetch every 5s
 });
