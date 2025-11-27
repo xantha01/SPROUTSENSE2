@@ -119,15 +119,34 @@ function updateValueState(containerId, value, min, max, normalMin, normalMax) {
   const label = container.querySelector(".levellabel");
   const level = container.querySelector(".level");
 
+  // --- Determine Status ---
   let status = "";
   if (value < normalMin) status = "low";
   else if (value > normalMax) status = "critical";
   else status = "normal";
 
+  // --- Calculate Target Width ---
   const percent = ((value - min) / (max - min)) * 100;
-  const width = Math.max(0, Math.min(percent, 100));
-  level.style.width = width + "%";
+  const targetWidth = Math.max(0, Math.min(percent, 100));
 
+  // ✅ Get current width (as a number)
+  const currentWidth = parseFloat(level.style.width) || 0;
+
+  // ✅ Animate Width
+  const duration = 500;
+  const startTime = performance.now();
+
+  function animate(time) {
+    const progress = Math.min((time - startTime) / duration, 1);
+    const animatedWidth = currentWidth + (targetWidth - currentWidth) * progress;
+    level.style.width = animatedWidth + "%";
+
+    if (progress < 1) requestAnimationFrame(animate);
+  }
+
+  requestAnimationFrame(animate);
+
+  // --- Update Classes ---
   const statusClasses = ["low", "normal", "critical"];
   level.classList.remove(...statusClasses);
   label.classList.remove(...statusClasses);
@@ -135,8 +154,10 @@ function updateValueState(containerId, value, min, max, normalMin, normalMax) {
   level.classList.add(status);
   label.classList.add(status);
 
+  // --- Update Label Text ---
   label.textContent = status.charAt(0).toUpperCase() + status.slice(1);
 }
+
 
 // ======================= JSONP REQUEST =======================
 function updateValues() {
@@ -160,3 +181,4 @@ document.addEventListener("DOMContentLoaded", () => {
   updateValues();
   setInterval(updateValues, 5000); // Fetch every 5s
 });
+
